@@ -1,0 +1,6 @@
+var el = $('<%=h(render :partial => "shared/directory_item", :collection=> @items)%>');
+$("#<%=@folder.data_identity%>").replaceWith(el);
+$("span#notify-msg").html("<%=flash_messages%>");
+SelectMonitor.deselect_all();
+SelectMonitor.bind_events($("#<%=@folder.data_identity%>"));
+check_for_messages();

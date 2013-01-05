@@ -1,0 +1,136 @@
+// Uploads object:
+// activities - 
+// 1. to handle incoming uploads
+// 2. add upload to bulk upload container
+// 3. update progress boxes
+// 4. switch containers to complete or errors
+ 
+var Uploader = {
+	queue: new Array(),
+	queue_file_size: 0,
+	completed: new Array(),
+	current_folder: '',
+	upload_el: '',
+	inline_status : null,
+	bulk_status: null,
+	init: function() {
+		this.inline_status = $("div#inline-upload-status");
+		this.current_folder = $("#current_folder_name").val();
+		this.upload_el = $("ol#upload-files-list");
+		this.bulk_status = $("div.bulk-upload-info");
+	},
+	dropped: function(files) {
+		var _el = this.inline_status,
+			_dest = this.current_folder,
+			_upload_list = this.upload_el,
+			_completed = this.completed;
+		
+		// reset metrics and style for inline status
+		this.status_reset();
+		// add new files to queue
+		console.info(this.upload_el);
+		$.each(files, function(index) {
+			var upload = new Upload(files[index], _dest, _completed.length + index);
+			 Uploader.queue.push(upload);
+			 Uploader.queue_file_size += upload.file.size;
+			upload.add_to(_upload_list);
+		});
+    	_el.find("a.view-details").html("please wait.");
+		_el.find("span.file-desc").html("loading files....");
+		_el.find("div.status").html("0 kb/s");
+		_el.show();
+		$("#notify-wrapper").hide();
+		//Uploader.show_upload();
+		return true;
+	},
+	update_bulk_status: function() {
+		// file count
+		var text = this.queue.length + " File" + (this.queue.length > 1 ? "s" : "");
+		this.bulk_status.find("span.num-files").empty().append(text);
+		// file size
+		this.bulk_status.find("span.size").empty().append(file_size(queue_file_size));
+		//time left
+		this.buld_status.find("");
+	},
+	display_files: function(files) {
+		
+	},
+	uploadFinished: function(i, file, response, time) {
+		console.info(response);
+		Uploader.queue[i].done(response, time);
+	},
+	show_upload : function (force_show) {
+		console.info(!Modal.isVisible());
+		if(!Modal.isVisible()) {
+		var html = '',
+			title = '',
+			content ='';
+		// fetch title template and populate
+		title = { icon: 's_web_upload_32', title: "Upload to '" + Uploader.current_folder + "'"};
+		html = $( "#modal_title_tmpl" ).render( title );
+		$("#modal-title").empty().append(html);
+		var au = $("#advanced-upload-modal");
+		au.hide();
+		$("div#browse").append(au);
+		au = $("#advanced-upload-modal");
+		au.show();
+		au.find("span.upload-foldername").html(Uploader.current_folder);
+		if(au.find("ol#upload-files-list li").length > 0 || force_show) {
+			au.find("#upload-desc").hide();
+			au.find("ol#upload-files-list").show();
+			au.find("div#bulk-upload-status").show();
+			au.find("#upload-start-buttons").hide();
+			au.find("#upload-running-buttons").show();
+		}else{
+			au.find("#upload-desc").show();
+			au.find("ol#upload-files-list").hide();
+			au.find("div#bulk-upload-status").hide();
+			au.find("#upload-start-buttons").show();
+			au.find("#upload-running-buttons").hide();
+		}
+		Modal.content(au);
+		
+		//$("#advanced-upload-modal").show();
+		
+		this.inline_status.hide();
+		// show modal box
+		Modal.show();
+		}
+	},
+	
+	reset : function(event) {
+		var _status = this.inline_status
+		_status.find("div.icon img").removeClass("s_web_synced");
+		_status.find("div.icon img").addClass("s_web_syncing");
+		_status.removeClass("complete");
+		_status.find("div.inline-upload-progress").width("0%");
+		_status.find("div#bulk-upload-status").width("0%");
+		$("#advanced-upload-modal ol#upload-files-list").empty();
+		$("#bulk-upload-status").removeClass("complete");
+	},
+	progressUpdated : function(i, file, progress) {
+		Uploader.queue[i].progressUpdate(progress);
+		//this.inline_status.find(".inline-upload-progress").width(progress + "%");
+		//this.bulk_status.find(".upload-progress-bar").width(progress + "%");
+	},
+	afterall : function() {
+		Uploader.completed = Uploader.completed.concat(Uploader.queue);	
+		Uploader.queue = new Array();
+	},
+	beforeSend: function(i) {
+		Uploader.queue[i].beforeSend();
+	},
+	overall_progress: function(i, file, progress){
+		if(file_progress.length > 1){
+			current = 0;
+			for(idx = 0; idx < i; idx++) {
+				current += file_progress[idx].size;
+			}
+			current += file_progress[i].size * (progress/100);
+			return (current/all_file_size*100.00).toFixed(2);
+		} else {
+			return progress;
+		}
+}
+	
+};

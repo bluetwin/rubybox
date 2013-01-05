@@ -1,0 +1,67 @@
+<script type="text/x-jquery-tmpl" id="bulk_upload_tmpl">
+ <div id="advanced-upload-modal" style="display: none;">
+  <div id="upload-modal-dropzone" style="display: none;">
+    Drop your file to upload to <span class="dnd-upload-foldername">&nbsp;</span>
+  </div>
+
+  <div id="upload-desc">
+    Choose files to upload to the folder <span class="upload-foldername">&nbsp;</span>. You can select more than one file at a time.
+  </div>
+
+  <div id="dnd-upload-desc" style="display: none;">
+    You can select more than one file at a time. You can also drag and drop files anywhere on this page to start uploading.
+  </div>
+
+  <ol id="upload-files-list" style="" class="files"></ol>
+
+  <div id="bulk-upload-status" style="display: none;">
+    <div class="upload-progress-bar" style="width: 0;"></div>
+
+    <div class="bulk-upload-info">
+      <div class="files-info">
+        <span class="num-files"></span>
+        <span class="size"></span>
+        <span class="num-errors"></span>
+      </div>
+      <div class="status"></div>
+      <div class="time-left"></div>
+    </div>
+  </div>
+
+  <div id="upload-start-buttons" class="modal-buttons" style="text-align: left;">
+    <span class="uploader-footer-text">
+      Having problems? Try the <a class="basic-link-start">basic uploader</a>.
+    </span>
+		<form id="fileupload" action="<%=uploads_url()%>" method="POST" enctype="multipart/form-data">
+		<input type="hidden" id="current_folder" value="<%=@folder.id%>"> 
+		<input type="hidden" id="user_id" value="<%=current_user.id%>"> 
+    <div style="float: right;">
+      <span id="upload-loading" style="padding-right: 5px;" class="btn btn-success fileinput-button">
+          <input type="button" class="freshbutton-blue" id="choose-button" style="opacity:1.0" value="Choose files">
+          <input type="file" name="file" class="filedrop" multiple>
+      </span>
+      <input type="button" class="freshbutton-blue" id="choose-button" style="display: none;" value="Choose files">
+      <input type="button" class="freshbutton" onclick="Modal.hide();" value="Cancel">
+    </div>
+		</form>
+    <div class="clear"></div>
+  </div>
+
+  <div id="upload-running-buttons" class="modal-buttons" style="text-align: left; display:none;">
+    <input type="button" class="freshbutton-lightblue" id="add-button" style="float:left" value="Add more files">
+    <span class="uploader-footer-text" style="padding-left: 5px;">
+      Having problems? Try the <a class="basic-link-running">basic uploader</a>.
+    </span>
+
+    <div style="float: right;">
+      <input type="button" class="freshbutton" id="hide-button" onclick="Modal.hide();" value="Hide">
+      <input type="button" class="freshbutton-blue" id="done-button" onclick="Upload.reset(); Modal.hide();" style="display: none;" value="Done">
+    </div>
+    <div class="clear"></div>
+  </div>
+
+  <div id="flash-upload-container" style="position: absolute; left: -2000px;">
+    <span id="flash-upload-button-placeholder"></span>
+  </div>
+</div>
+</script>

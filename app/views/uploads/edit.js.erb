@@ -1,0 +1,5 @@
+var el = $('<%=h(render :partial => "form", :locals=>{:upload => @upload})%>');
+$("#u_<%=@upload.id%>").replaceWith(el);
+SelectMonitor.deselect_all();
+el.find("input").focus();
+

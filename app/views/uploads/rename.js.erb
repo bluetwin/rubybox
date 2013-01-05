@@ -1,0 +1,6 @@
+var el = $('<%=h(render :partial => "shared/directory_item", :collection=> [@upload])%>');
+$("#<%=@upload.data_identity%>").replaceWith(el);
+$("span#notify-msg").html("<%=flash_messages%>");
+SelectMonitor.deselect_all();
+SelectMonitor.bind_events($("#<%=@upload.data_identity%>"));
+check_for_messages();

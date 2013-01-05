@@ -1,0 +1,4 @@
+<div id="user_dropdown" class="sub-nav chat-bubble"><ul style="text-align:left;"><li><div class="name"><%=current_user.name%></div><div class="email force-no-break"><span id="" style="font-size:11px;"></span></div></li>
+	<li>
+		<%= link_to(image_tag("icon_spacer.gif", :class=>" sprite sprite_web s_web_signout") + "Sign out", destroy_user_session_path(), :method=>"DELETE") %>
+		</li></ul><div class="chat-bubble-arrow-border"></div><div class="chat-bubble-arrow"></div></div>

@@ -1,0 +1,36 @@
+var Tabs = {
+    showTab: function(o, activate) {
+			$("ul#subtabs").find("li.selected").removeClass("selected");
+			$("div.content-tab").each(function(index) {
+				if($(this).is(":visible")) {
+					$(this).hide();
+				}
+			});
+			$("li#" + activate + "-tab").addClass("selected");
+			$("div#" + activate + "-content").show();
+		},
+		init: function(url) {
+			var idx = url.indexOf("#");
+			var anchor = idx != -1 ? url.substring(idx+1) : "";
+			idx = null;
+			$("li.subtab").each( function(i) {
+				if(this.id == anchor + "-tab") {
+					idx = i;
+					var el = $(this);
+					Tabs.showTab(this, anchor);
+				}
+			});
+			if(anchor == "" || idx == null) {
+				var el = $("li.subtab:first").attr('id');
+				anchor = el.substring(0, el.indexOf("-"));
+				Tabs.showTab(this, anchor);
+				$("li.subtab:first").addClass("selected");
+			}
+			
+		}
+		
+		
+		
+		
+};
+

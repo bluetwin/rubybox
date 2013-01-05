@@ -1,0 +1,50 @@
+<%=render :partial => "shared/page_sidebar"%>
+<div id="page-content"  >    
+	<%=hidden_field_tag 'current_folder_id', @folder.id%>
+	<%=hidden_field_tag 'current_folder_name', @folder.name%>
+	<%=hidden_field_tag 'current_user_id', current_user.id%>
+	
+	<div name="browse" id="browse" class="wit_group">
+	
+		<%=render :partial=>"shared/inline_upload_status"%>
+		<div id="browse-box" class="list_view" style="">
+    		<div id="browse-header">
+					
+               	<div id="browse-global-actions-bar">
+					
+            		<div id="browse-location" class="page-header-text"><a id="breadcrumbs-box" href="/" data-fq_path="" class="crumb"><%=image_tag("icon_spacer.gif", :class=>"sprite sprite_web s_web_dropbox_32")%></a> 
+					<% @path.each do | p|%> <%=image_tag("icon_spacer.gif", :style=>"line-height: 100%;",  :border=>"0", :alt=>"", :class=>"sprite sprite_web s_web_breadcrumb breadcrumb_spacer ")%><%if p == @folder%> <%=p.name%><%else%> <%=link_to(p.name,'/' + p.id)%><%end%><%end%></div><%=render :partial => "shared/icons_search"%>
+       			</div>
+				<%=render :partial => "shared/root_actions"%>
+		 		<div id="browse-sort" class="clearfix" >
+         				<a id="name-sorter" class="sortable-column-header bolded" data-sort="FILES_BY_NAME" data-ascending="false" style="cursor: pointer; ">
+                        	<span style="cursor: pointer; ">Name</span>
+							<%=image_tag("icon_spacer.gif", :style=>"line-height: 100%; cursor: pointer; ",  :border=>"0", :alt=>"", :class=>"sprite sprite_web  s_web_sort-uptick-off ")%>
+          				</a>
+          				<a id="kind-sorter" class="sortable-column-header noarrow" data-sort="FILES_BY_KIND" data-ascending="false" style="cursor: pointer; ">
+           					<span id="kind-sorter-label" style="cursor: pointer; ">Kind</span>
+							<%=image_tag("icon_spacer.gif", :style=>"line-height: 100%; cursor: pointer; ", :border=>"0", :alt=>"", :class=>"sprite sprite_web s_web_downtick-spacer")%>
+          				</a>
+         				<a id="location-sorter" class="sortable-column-header" data-sort="FILES_BY_LOCATION" data-ascending="false" style="cursor: pointer; ">
+            				<span style="cursor: pointer; ">Location</span>
+							<%=image_tag("icon_spacer.gif", :style=>"line-height: 100%; cursor: pointer; ", :border=>"0", :alt=>"", :class=>"sprite sprite_web s_web_downtick-spacer")%>
+          				</a>
+          				<a id="modified-sorter" class="sortable-column-header"  data-sort="FILES_BY_MODIFIED" data-ascending="false" style="cursor: pointer; ">
+            				<span style="cursor: pointer; ">Modified</span>
+							<%=image_tag("icon_spacer.gif", :style=>"line-height: 100%; cursor: pointer; ", :border=>"0", :alt=>"", :class=>"sprite sprite_web s_web_sort-uptick-off")%>
+          				</a>
+       				</div>
+			</div>
+			<div id="original_content">		
+
+				<%=image_tag("icon_spacer.gif", :style=>"display:none;position:absolute;", :id=>"highlight-arrow", :alt=>"", :class=>"sprite sprite_web  s_web_arrow_highlight ")%>
+    			<ol id="browse-files" style="cursor: default;" class="mouse-active ">
+					<%=render :partial=>"shared/directory_item", :collection=>@folder.sub_folders%>
+					<%=render :partial=>"shared/directory_item", :collection=>@files%>
+				</ol>
+   			</div>
+		
+		</div>
+		<%=render :partial => "shared/advanced_uploader"%>
+	</div>
+</div>

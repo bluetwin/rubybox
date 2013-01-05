@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" class="fixed-header earthrise has_sidebar">
+<head>
+
+	<!-- General meta information -->
+		<title>rubybox : a DropBox clone in Ruby by bluetwin</title>
+		<meta name="keywords" content="" />
+		<meta name="description" content="" />
+		<meta name="robots" content="index, follow" /> 
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+	<!-- // General meta information -->
+	
+	<%= stylesheet_link_tag 'application', :media=>"screen"%>
+	<%#= stylesheet_link_tag params[:controller] %> 
+	<!-- Google Font and style definitions -->
+	<%= stylesheet_link_tag 'http://fonts.googleapis.com/css?family=PT+Sans:regular,bold', :media=>"screen" %>
+	<%#= stylesheet_link_tag 'jquery.multiselect.css', :media=>"screen", :id=>"multiselect" %>
+	<%#= stylesheet_link_tag 'jquery.multiselect.filter.css', :media=>"screen", :id=>"multiselectf" %>
+	
+	<%= stylesheet_link_tag 'main', :media=>"screen"%>
+
+	<!--[if lt IE 9]>
+
+	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+
+	<link rel="stylesheet" href="css/ie.css">
+
+	<![endif]-->
+
+	<!-- Apple iOS and Android stuff -->
+
+	<meta name="apple-mobile-web-app-capable" content="no">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link rel="apple-touch-icon-precomposed" href="apple-touch-icon-precomposed.png">
+
+	<!-- Apple iOS and Android stuff - dont remove! -->
+
+	<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,maximum-scale=1">
+	
+	<%= javascript_include_tag "application" %>
+	<%= javascript_include_tag params[:controller] %> 
+		<%= csrf_meta_tag %>
+
+
+
+	</script>
+
+	<!-- Favicon -->
+	<link rel="shortcut icon" type="image/gif" href="<%=asset_path("favicon.gif")%>" />
+	<!-- // Favicon -->
+	
+
+	
+</head>
+<body class="en None webkit" style="min-height:400px">
+	<%=render :partial => "shared/modal_box"%>
+	<% if user_signed_in? %>
+	<div id='notify-wrapper' style='position;absolute;display:none;'><span id='notify'><span id='notify-msg'><%=flash_messages%></span></span></div>
+	<%end%>
+	<%=render :partial => "folders/templates/modal_title"%>
+	<%=render :partial => "folders/templates/upload_item"%>
+	<%=render :partial => "folders/templates/modal_content"%>
+	<%=render :partial => "folders/templates/delete_items"%>
+	<%=render :partial => "folders/templates/directory_item"%>
+	<div id="outer-frame">
+	<% if user_signed_in? %>
+	<%=render :partial => "shared/page_header"%>
+	<% end %>
+     <%=yield%>
+	</div>
+
+<div id="hidden-resizer" style="visibility: hidden"></div>
+
+</body>
+</html>

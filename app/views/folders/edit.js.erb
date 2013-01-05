@@ -1,0 +1,5 @@
+var el = $('<%=h(render :partial => "row", :locals=>{:row => @folder})%>');
+$("#f_<%=@folder.id%>").replaceWith(el);
+SelectMonitor.deselect_all();
+el.find("input").focus();
+

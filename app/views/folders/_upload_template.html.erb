@@ -1,0 +1,39 @@
+<script type="text/x-jquery-tmpl" id="upload_list_item_tmpl">
+  <li class="upload-file"
+      id="{{>file.id}}"
+      data-dest="{{>dest}}">
+    <div class="upload-progress-bar"></div>
+
+    <div class="upload-file-info">
+      <div class="filename-col">
+        
+        <span class="filename">
+		{{>filename_snippet}}
+        </span>
+        <span class="size">
+          " - " {{>size}}
+        </span>
+      </div>
+
+      <div class="dest-col">
+        <a class="dest">
+          {{>dest_snippet}}
+        </a>
+      </div>
+
+      <div class="error-col" style="display: none;">
+        <span class="error-msg"></span>
+        <span class="error-details">
+         
+        </span>
+      </div>
+
+      <div class="status-col">
+        <a class="small-x-button"></a>
+      </div>
+
+      <div class="time-col"></div>
+
+      <br class="clear"/>
+  </li>
+</script>

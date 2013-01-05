@@ -1,0 +1,9 @@
+
+var el = $('<%=h(render :partial => "row", :locals=>{:row => @folder})%>');
+$("#browse-files ").prepend(el);
+el.find("input").focus();
+el.addClass('file-select');
+SelectMonitor.setEditing("<%=@folder.data_identity%>");
+SelectMonitor.deselect_all();
+
+

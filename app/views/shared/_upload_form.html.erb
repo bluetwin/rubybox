@@ -1,0 +1,9 @@
+<div id="upload-form" style="display:none;">
+	<h4 style="display:inline;float:left; padding-right:30px;">Upload Files </h4>
+	<div  style="height: 40px;display:inline: float:left;" id="user-info">
+	<%= form_tag(AnalysisFile.new, :remote=>true,:method => :post,:id=>"upload_form", :name=>"uploader") do  %>
+		<%=hidden_field_tag "upload_user_id", current_user.id %>
+			<input type="file" id="upload_button" name="upload_button"  multiple>	
+		<% end %>		
+		</div>   
+</div>

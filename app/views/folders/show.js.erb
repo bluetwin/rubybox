@@ -1,0 +1,4 @@
+var el = $('<%=h(render :partial => "shared/directory_item", :collection=> [@folder])%>');
+$("#<%=@folder.data_identity%>").replaceWith(el);
+SelectMonitor.bind_events($("#<%=@folder.data_identity%>"));
+

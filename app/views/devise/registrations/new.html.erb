@@ -1,0 +1,48 @@
+
+<body class="en None webkit" style="min-height: 629px; " screen_capture_injected="true"><div id="page-content" >
+	<div id="invite-register-page" class="ads">
+  	<div class="center">
+    	<div id="banner" style="padding-top:120px;">
+     		<div style="">
+      		<h1>Nimbus System Login</h1>
+					<br class="clear">
+				
+				</div>
+    	</div>
+  	</div>
+	  <div id="invite-register-container">
+			<br class="clear">
+  		<%= form_for(resource, :as => resource_name, :url => session_path(resource_name), :html => {:id=>"loginform"}) do |f| %>
+			<%= flash_messages%>
+			<div id="register-partial">
+				<label id="email-label" for="email">Email</label> 	
+  				<div id="email-field" class="sick-input clearfix populated">		
+					
+    			<%= f.text_field :email, :value=>"", :tabindex=>"3", :title=>"", :required=>true, :placeholder=>"Email address or username"%>
+     			<div id="email_check_warning" style="display: none;"></div>
+  			</div>
+		  	<label id="new-password-label" for="password">Password</label>
+  		<div id="new-password-field" class="sick-input populated">
+				<%= f.password_field :password, :tabindex=>"4", :required=>"1",  :placeholder=>"Enter your Password"%>
+			</div>
+
+    	<div id="register-footer">
+				<%= f.check_box :remember_me, :tabindex=>"5" %>
+      	<label for="tos_agree">Remember me</a></label>
+				<input type="submit" id="register-submit" name="register-submit" class="freshbutton-blue one-submit-at-a-time" value="Sign In" tabindex="6">
+			</div>
+			<% end %>    
+		</div>
+	</div>
+<br class="clear">
+  <p id="whats-dropbox" class="center">
+		<%= render :partial => "devise/shared/links" %>
+    <!--<a href="/tour" target="_blank">What is Nimbus?</a>-->
+		<br>
+		
+  </p>
+
+
+		
+
+</body>

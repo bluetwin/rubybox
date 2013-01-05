@@ -1,0 +1,5 @@
+var el = $('<%=h(render :partial => "shared/directory_item", :collection=> [@folder])%>');
+SelectMonitor.replace_new('#<%=@folder.data_identity%>',el);
+SelectMonitor.new_flag = false;
+$("span#notify-msg").html("<%=@msg%>");
+check_for_messages();

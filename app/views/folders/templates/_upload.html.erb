@@ -1,0 +1,24 @@
+<script type="text/x-jquery-tmpl" id="upload_tmpl">
+<li class="template-upload upload-file progress" id="upload_{{>index}}" data-dest="{{>dest}}">
+	<div class="upload-progress-bar bar" style="width: 0%;"></div>      
+	<div class="upload-file-info">       
+		<div class="filename-col">         
+			<img src='/assets/icon_spacer.gif' class='sprite sprite_web {{>icon}}' />
+			<span class="filename">{{>file.name}}</span>
+			<span class="size">- {{>~size}}</span>
+		</div>
+		<div class="dest-col">
+			<a class="dest">{{>dest}}</a>
+		</div>
+		<div class="error-col" style="display: none;">
+			<span class="error-msg"></span>
+			<span class="error-details"> 
+				<img src="/assets/icon_spacer.gif" class="sprite sprite_web s_web_information "> </span>
+		</div>
+		<div class="status-col"><button class="start">Start</button><a class="cancel small-x-button"></a></div>
+		<div class="time-col"></div>
+		<br class="clear">
+	</div>
+</li>
+</script>
+

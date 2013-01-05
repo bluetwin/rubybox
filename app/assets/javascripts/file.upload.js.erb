@@ -1,0 +1,207 @@
+$(document).ready(function() {
+	var jqXHR = null;
+	$('#fileupload').fileupload({
+		filesContainer: '#upload-files-list',
+		autoUpload: false,
+		sequentialUploads: true,
+		bitrateInterval: 500,
+		acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i, // only allow images
+		limitConcurrentUploads: 1,
+		add: function (e, data) {
+			var upload_info =  $("#bulk-upload-status div.bulk-upload-info")
+			var inline = $("#inline-upload-status");
+			 $('#bulk-upload-status .upload-progress-bar').css('width', '0%');
+			 upload_info.find("div.status").empty().append(Sprite.html('web','s_web_syncing', {}));
+			inline.find("div.status").html('');
+			inline.find("a.view-details").html("");
+			inline.find("span.file-desc").html("");
+			inline.find("div.icon").empty().append(Sprite.html('web','s_web_syncing', {}));
+			var au = $("#advanced-upload-modal");
+			au.find("#upload-desc").hide();
+			au.find("ol#upload-files-list").show();
+			au.find("div#bulk-upload-status").show();
+			au.find("#upload-start-buttons").hide();
+			au.find("#upload-running-buttons").show();
+			console.info("adding files");
+			$("#bulk-upload-status").removeClass("complete");
+			var info = $("#bulk-upload-status div.bulk-upload-info div.files-info");
+			info.data("count",$("#upload-files-list").find('li').length);
+			info.data("complete",$("#upload-files-list").find('li.complete').length);
+			var size = 0;
+			$("#upload-files-list").find('li').each(function(index) {
+				size += parseInt($(this).data("size"));
+			});
+			info.data("filesize",size);
+			console.info(objectToString(data.originalFiles));
+			var info = $("#bulk-upload-status div.bulk-upload-info div.files-info");
+			$.each(data.files, function(index, file)  {
+				var i = $("#upload-files-list").find('li').length;
+				
+				var params = {file: file, dest: $("#current_folder_name").val(), index:i, icon:Sprite.ext_icon(file.name)}
+				$("#upload-files-list").append($("#upload-tmpl").render(params));
+				data.context = $("#upload-files-list li#upload_" + i);
+				data.context.data('IE',file.size);
+					console.info("data = IE: " + data.context.data('IE'));
+				data.context.find(".small-x-button").click(function (e) {
+					e.preventDefault();
+					console.info("o hai");
+					var info = $("#bulk-upload-status div.bulk-upload-info div.files-info");
+           			var template = $(e.currentTarget).closest('.template-upload'),
+                	data = template.data('data') || {};
+            		if (!data.jqXHR) {
+               			data.errorThrown = 'abort';
+                		this._trigger('fail', e, data);
+            		} else {
+               			data.jqXHR.abort();
+            		}
+					info.data("count", parseInt(info.data("count")) - 1);
+					var parent = $(this).closest("li");
+					parent.addClass("cancelled");
+					parent.find("div.dest-col").html("Cancelled");
+					parent.find("div.status-col").empty().append(Sprite.html('web','s_web_cancelsync', {}));
+					parent.find("div.upload-progress-bar").css("width", "0%");
+					
+				});
+
+				info.data("count", parseInt(info.data("count")) + 1);
+				info.data("filesize", parseInt(info.data("filesize")) + file.size);
+			});
+			info.find("span.num-files").html(info.data("count") + " file" + ((info.data("count") > 1) ? "s" : ""));
+			info.find("span.size").html( filesize(parseInt(info.data("filesize")) ));
+			if(parseInt(info.data("count")) > 6) {
+				 $("#upload-files-list").addClass("scroll");
+			}
+			inline.find("div.icon").empty().append(Sprite.html('web','s_web_syncing', {}));
+			if(!Modal.isVisible()) {
+				$("#inline-upload-status").show();
+			}
+			
+    		//Uploader.show_upload(true);
+			var xhr = data.submit();
+			data.context.data('data',{jqXHR: xhr});
+		
+			
+		},
+		send: function (e, data) {
+			console.info("data = IE: " + data.context.data('IE'));
+			if(data.context.data('IE')== undefined) {
+				var upload_info =  $("#bulk-upload-status div.bulk-upload-info");
+				var info = $("#bulk-upload-status div.bulk-upload-info div.files-info");
+				var inline = $("#inline-upload-status");
+				var file_info = upload_info.find("div.files-info");
+				var count = parseInt(file_info.data("count"));
+				var completed = parseInt(file_info.data("complete"));
+				info.find("span.num-files").html(count + " file" + ((count > 1) ? "s" : ""));
+				info.find("span.size").html("...please wait");
+				$("#bulk-upload-status div.bulk-upload-info div.time-left").empty().append('<img src="/assets/ajax-uploader.gif" />');
+				inline.find("span.file-desc").html("Uploading "+ data.files[0].name);
+				inline.find("a.view-details").html((count - completed) + " files left");
+    		data.context.find(".time-col").append('<img src="/assets/ajax-uploader.gif" />');
+			}
+		},	
+		done: function (e, data) {
+			var upload_info =  $("#bulk-upload-status div.bulk-upload-info");
+			var inline = $("#inline-upload-status");
+			var file_info = upload_info.find("div.files-info");
+			var count = parseInt(file_info.data("count"));
+			var completed = parseInt(file_info.data("complete"));
+			
+			data.context.find(".time-col").empty();
+			data.context.addClass("complete");
+			data.context.find("div.status-col").empty().append(Sprite.html('web','s_web_synced', {}));
+			console.info(data.result);
+      $.each(data.result, function (index, file) {
+		  data.context.find(".time-col").empty();
+				var html = $("#directory_item_tmpl").render(file);
+      			$("#browse-files").append(html);
+				$("#" + file.data_identity).fadeIn("fast");
+				//console.info($(html)[0].id);
+				SelectMonitor.bind_events($("li#" + $(html)[0].id));
+				completed = completed + 1;
+				file_info.data("complete",completed);
+				data.context.find("div.upload-progress-bar").css(
+            'width',
+            '100%'
+        );
+      });
+			
+			if(completed == count) {
+				if(data.context.data('IE')== undefined) {
+					var info = $("#bulk-upload-status div.bulk-upload-info div.files-info");
+					info.find("span.size").html("");
+				}
+				$(".inline-upload-progress").css('width', '100%');
+				$('#bulk-upload-status .upload-progress-bar').css('width', '100%');
+				var file_text = " file" + ((count > 1) ? "s" : "");
+				file_info.find("span.num-files").html("Uploaded " + count + file_text);
+				$("#bulk-upload-status").addClass("complete");
+				$("#bulk-upload-status div.bulk-upload-info div.time-left").empty();
+				upload_info.find("div.status").empty().append(Sprite.html('web','s_web_synced', {}));
+				$("#advanced-upload-modal").find("#hide-button").hide();
+				$("#advanced-upload-modal").find("#done-button").show();
+				inline.addClass("complete");
+				inline.find("div.status").html('');
+				inline.find("a.view-details").html("View details");
+				inline.find("span.file-desc").html("Uploaded " + completed  + file_text);
+				inline.find("div.icon").empty().append(Sprite.html('web','s_web_synced', {}));
+				inline.find("div.status").html('<a class="small-x-button"></a>');
+				inline.find("div.status a.small-x-button").on('click',function() { $("#inline-upload-status").hide();});
+			}
+        },
+		progressall: function (e, data) {
+				//console.info(data);
+				var inline = $("#inline-upload-status");
+				var upload_info =  $("#bulk-upload-status div.bulk-upload-info");
+				var file_info = upload_info.find("div.files-info");
+				var files_left = parseInt(file_info.data("count")) - parseInt(file_info.data("complete"));
+				
+        var progress = parseInt(data.loaded / data.total * 100, 10);
+				var t_left = timeLeft((data.total - data.loaded) * 8 / data.bitrate);
+				$("#bulk-upload-status div.bulk-upload-info div.time-left").html( t_left);
+				inline.find("div.status").html(t_left);
+				inline.find("a.view-details").html(files_left + " files left");
+        $('#bulk-upload-status .upload-progress-bar').css('width', progress + '%');
+				$(".inline-upload-progress").css('width', progress + '%');
+    },
+	progress: function (e, data) {
+		var inline = $("#inline-upload-status");
+		
+		var el = $(data.context.selector);
+		inline.find("span.file-desc").html("Uploading "+ data.files[0].name);
+     var progress = parseInt(data.loaded / data.total * 100, 10);
+		//el.find("div.time-col").html( timeLeft((data.total - data.loaded) * 8 / data.bitrate));
+   if(progress==100) {
+		el.find("div.status-col").empty().append('<img src="/assets/icons/ajax-loading-small.gif" />'); 
+		//el.find("div.time-col").empty().append('saving'); 
+		
+	 }
+		el.find("div.upload-progress-bar").css(
+            'width',
+            progress + '%'
+        );
+    },
+	sent: function(e,data){}
+		
+});
+	
+	
+});
+
+
+ function timeLeft (seconds) {
+            var date = new Date(seconds * 1000),
+                days = parseInt(seconds / 86400, 10),
+								left = '';
+            if(seconds > 1) {
+							days = days ? days + ' days ' : '';
+							left = ('' + date.getUTCSeconds()).slice(-2) + " secs";
+						}
+						else {
+							left = (seconds == 0 ? "" : "1 secs");
+							days = '';
+						}
+						left = (('' + date.getUTCMinutes()).slice(-2) > 0) ? ('' + date.getUTCMinutes()).slice(-2) + " mins" : left;
+						left = (('' + date.getUTCHours()).slice(-2) > 0) ? ('' + date.getUTCHours()).slice(-2) + " hours" : left;
+					
+            return days + left +(seconds ==0 ? "" : " left");
+        }

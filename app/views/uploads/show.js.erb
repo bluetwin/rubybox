@@ -1,0 +1,4 @@
+var el = $('<%=h(render :partial => "shared/directory_item", :collection=> [@upload])%>');
+$("#<%=@upload.data_identity%>").replaceWith(el);
+SelectMonitor.bind_events($("#<%=@upload.data_identity%>"));
+

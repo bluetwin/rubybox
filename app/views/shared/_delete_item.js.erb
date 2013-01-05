@@ -1,0 +1,4 @@
+<%@items.each do | item | %>
+$("#<%=item.data_identity%>").css("background-color","#D46D66");
+SelectMonitor.removeItem($("#<%=item.data_identity%>"),true);<% end %>
+notify('<%=@msg[:body]%>','<%=@msg[:type]%>'); 

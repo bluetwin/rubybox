@@ -1,0 +1,152 @@
+$(document).ready(function() {
+	
+	$content = $('#outer-frame'),
+
+	
+	$('.ui-button').on('click',function(){
+		var dropdown = $("#user_dropdown");
+		if(!dropdown.is(':visible')) {
+			$("#user_dropdown").show();
+		}
+	});
+			
+	$(document).mouseup(function (e) {
+    var container = $("#user_dropdown");
+    if (!container.is(e.target) && container.has(e.target).length === 0)
+    {
+			container.hide();
+    }
+	 	var container = $("#original_content,#modal-box,#modal-behind,#modal-overlay,#browse-sort,#browse-root-actions,#new_folder_button");
+	 	if (!container.is(e.target) && container.has(e.target).length === 0)
+    {
+			$(".file-select").each(function() {
+       	var el = $(this);
+				//console.info("removing file select");
+				SelectMonitor.removeItem(el);
+        el.removeClass("file-select");
+				el.removeAttr("draggable");
+				
+			});
+			$(".browse-file div.filename-col form").each(function() {
+				console.info("submitting form");
+				console.info(this);
+				$(this).submit();
+			});
+    }
+	});
+	
+	$('.ul_select_menu').each(function(index) {
+		$(this).on('click',function(){
+			var dropdown = $(this);
+			if(!dropdown.hasClass("shown")) {
+				dropdown.addClass("shown");
+				dropdown.css("z-index", 99);
+			}
+		});
+	});
+	
+	$(document).mouseup(function (e) {
+    	var container = $(".ul_select_menu");
+    	if (container.has(e.target).length === 0)
+    	{
+			container.removeClass("shown");
+    	}
+	});
+	
+	$('#fileupload').fileupload({
+        dataType: 'json',
+        done: function (e, data) {
+            $.each(data.result, function (index, file) {
+                $('<p/>').text(file.name).appendTo(document.body);
+            });
+        }
+    });
+	
+	check_for_messages();
+	Modal.init("modal");
+		
+	
+	SelectMonitor.init(".browse-file");
+	Uploader.init();
+	Sprite.init();
+	
+	/*$(".filename-link").each(function(index) {
+		var $this = $(this);
+		$this.text($this.text().replace("\\'","."));
+	});*/
+			
+	$(window).resize(function () {
+         
+        //only do it if the dialog box is not hidden
+        if (!$('div#modal-overlay').is(':hidden')) Modal.show();       
+    }); 
+
+	$.views.helpers({
+
+		icon_html: function( type, icon, props) {
+			return Sprite.html(type,icon,props);
+		},
+		trimmed_filename: function(text) {
+			return centerTrim(text);
+		},
+		file_size: function(file) {
+			console.info(file.size);
+			return readable_filesize(file);
+		}
+	});
+	
+	
+		
+	
+});
+$(document).ajaxSend(function(e, xhr, options) {
+  var token = $("meta[name='csrf-token']").attr("content");
+  xhr.setRequestHeader("X-CSRF-Token", token);
+});
+
+function AssertException(message) { this.message = message; }
+AssertException.prototype.toString = function () {
+  return 'AssertException: ' + this.message;
+}
+
+function assert(exp, message) {
+  if (!exp) {
+    throw new AssertException(message);
+  }
+}
+
+var config = {
+	tooltip :{
+		gravity: 'nw',
+		fade: false,
+		opacity: 1,
+		offset: 0
+	},
+	rails : { root : ''}
+};
+
+
+if($.confirm) $.confirm.defaults = {
+	text:{
+		header: 'Please confirm',
+		ok: 'Yes',
+		cancel: 'No'
+	}
+};
+if($.prompt) $.prompt.defaults = {
+	text:{
+		header: 'Please prompt',
+		ok: 'OK',
+		cancel: 'Cancel'
+	}
+};
+if($.alert) $.alert.defaults = {
+	nativ: false,
+	resizable: false,
+	modal: true,
+	text:{
+		header: 'Notification',
+		ok: 'OK'
+	}
+};
+

@@ -1,0 +1,47 @@
+
+<div id="page-content" style="padding-left:0px;">
+	<div id="login-and-register-container" class="center">
+		<div id="login-container" style="margin-top:20px;margin-bottom:10px;">
+			<%#= devise_error_messages! %>
+			
+  		<%= form_for(resource, :as => resource_name, :url => session_path(resource_name), :html => {:id=>"loginform", :style=>"margin-top: 30px;text-align:left;"}) do |f| %>
+
+			<div class="title-text" style="text-align:center;" >Want to try rubybox?</div>
+			
+			<span class="error-message " style="font-size:14px;" style="text-align:center;"><%=flash_content%></span><br>
+			<div id="register-partial" style="margin-top:5px;">
+			
+				<label id="email-label" for="email">Username</label> 	
+
+  				<div id="email-field" class="sick-input clearfix populated">		
+					<span class="error-bubble force-no-break" style="<%='display:none;' unless !flash['alert'].nil?%>"><span class="error-message"><%=flash_content%></span><br>
+						<span class="error-bubble-arrow-border"></span><span class="error-bubble-arrow"></span></span>
+    			<%= f.text_field :username, :value=>"", :tabindex=>"3", :title=>"", :required=>true, :placeholder=>"Enter Username"%>
+     			<div id="email_check_warning" style="display: none;"></div>
+  			</div>
+		  	<label id="new-password-label" for="password">Password</label>
+  		<div id="new-password-field" class="sick-input populated">
+				<%= f.password_field :password, :tabindex=>"4", :required=>"1",  :placeholder=>"Enter your Password"%>
+			</div>
+
+    	<div id="register-footer">
+				<%= f.check_box :remember_me, :tabindex=>"5" %>
+      	<label for="tos_agree">Remember me</a></label>
+				<input type="submit" id="register-submit" name="register-submit" class="freshbutton-blue one-submit-at-a-time" value="Sign In" tabindex="6">
+			</div>
+			<% end %>    
+		</div>
+		
+	</div>
+
+  <p id="whats-dropbox" class="center">
+		<%= render :partial => "devise/shared/links" %>
+   <h4 style="margin-bottom:0px;line-height:normal;" >What is rubybox?</h4>
+		A reverse engineered DropBox clone for your home or small business
+  </p>
+ <!-- <div align="center">
+		<div style="width:230px;text-align:left; ">
+		Use these credentials to try it out<br><strong>username</strong>: test<br/>
+		<strong> password</strong>: derezzed3.1415</div>
+		</div>-->
+

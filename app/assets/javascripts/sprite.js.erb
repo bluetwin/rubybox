@@ -1,0 +1,49 @@
+var Sprite = {
+	icon_map: {},
+	init: function() {
+		this.icon_map = {"doc" : "word",
+				"xls" : "excel",
+			 	"xlsx" : "excel",
+			 	"rb"  : "ruby",
+			 	"erb" : "ruby",
+			 	"html" : "html",
+			 	"py" : "py",
+			 	"pdf" :  "acrobat",
+				"zip" : "compressed"};
+	},
+	ext_icon: function(filename, size) {
+		var icon = "s_web_page_white";
+		var ext = extension(filename)
+		if(this.icon_map[ext]){
+			icon += "_" + this.icon_map[ext];	
+		}
+		if(size) {
+			icon += "_" + size	
+		}
+		return icon ;
+	},
+	html: function(type, icon, properties) {
+		var img = "<img src='/assets/icon_spacer.gif' class='sprite sprite_" + type + " " + icon + "' ";;
+		for (var key in properties) {
+			if(properties[key]){
+				img += key + "=" + properties[key];
+			}
+		}
+		img += "/>"
+		return img;
+	}
+	
+};
+
+
+function extension(filename) {
+	
+	var ext = filename.split(".");
+	if(ext.length > 1) {
+		ext = ext[ext.length-1];	
+	}
+	else {
+		ext = ""	
+	}
+	return ext;
+}

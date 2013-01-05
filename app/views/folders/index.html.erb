@@ -1,0 +1,56 @@
+<%=hidden_field_tag 'current_folder_id', @folder.id%>
+	<div id="page-content"  style="width:800px;">    <div name="browse" id="browse" class="wit_group">
+
+<div id="browse-box" class="list_view" style="">
+    <div id="browse-header">
+               <div id="browse-global-actions-bar">
+            <div id="browse-location"><a id="breadcrumbs-box" href="/folders" data-fq_path="" class="crumb"><%=image_tag("icon_spacer.gif", :class=>"sprite sprite_web s_web_folder_32 ")%></a> 
+							<% @path.each do | p|%>
+							<%=image_tag("icon_spacer.gif", :style=>"line-height: 100%;",  :border=>"0", :alt=>"", :class=>"sprite sprite_web s_web_breadcrumb breadcrumb_spacer ")%>
+							<%if p == @folder%>
+							<%=p.name.camelize%>
+							<%else%>
+							<%=link_to(p.name.camelize, p)%>
+							<%end %>
+							<%end%></div>
+			<%=render :partial => "shared/icons_search"%>
+          
+        </div>
+        <%=render :partial => "audits/report_form"%>
+		<%=render :partial => "shared/upload_form"%>
+		
+		<div id="original_content">		
+        <div id="browse-root-actions" style=""><span class="filesize">              </span>     <span class="description">         test     </span>     <ul class="action-bar note">                                                    <li class="action primary">                  <button type="submit" name="action" data-value="download" title="Download">                      <%=image_tag("icon_spacer.gif", :class=>"sprite sprite_web s_web_download ")%>                      Download                  </button>              </li>                       <li class="action primary">                  <button type="submit" name="action" data-value="delete" title="Delete" onclick="SelectMonitor.delete_selected();">                      <%=image_tag("icon_spacer.gif", :class=>"sprite sprite_web s_web_delete_16 ")%>                  Delete                  </button>              </li>                       <li class="action primary">                  <button type="submit" name="action" data-value="rename" title="Rename">                     
+		<%=image_tag("icon_spacer.gif", :class=>"sprite sprite_web s_web_rename ")%>
+                      Rename                  </button>              </li>                       <li class="action primary">                  <button type="submit" name="action" data-value="move" title="Move">                      <%=image_tag("icon_spacer.gif", :class=>"sprite sprite_web s_web_move_16 ")%>
+					                        Move                  </button>              </li>                       <li class="action primary">                  <button type="submit" name="action" data-value="copy" title="Copy">                  <%=image_tag("icon_spacer.gif", :class=>"sprite sprite_web s_web_copy ")%>    
+											  Copy                  </button>              </li>                       </ul></div>
+        <div id="browse-sort" class="clearfix" >
+          <a id="name-sorter" class="sortable-column-header bolded" data-sort="FILES_BY_NAME" data-ascending="false" style="cursor: pointer; ">
+                        <span style="cursor: pointer; ">Name</span><%=image_tag("icon_spacer.gif", :style=>"line-height: 100%; cursor: pointer; ",  :border=>"0", :alt=>"", :class=>"sprite sprite_web  s_web_sort-uptick-off ")%>
+          </a>
+          <a id="kind-sorter" class="sortable-column-header noarrow" data-sort="FILES_BY_KIND" data-ascending="false" style="cursor: pointer; ">
+            <span id="kind-sorter-label" style="cursor: pointer; ">Kind</span><%=image_tag("icon_spacer.gif", :style=>"line-height: 100%; cursor: pointer; ", :border=>"0", :alt=>"", :class=>"sprite sprite_web s_web_downtick-spacer")%>
+          </a>
+          <a id="location-sorter" class="sortable-column-header" data-sort="FILES_BY_LOCATION" data-ascending="false" style="cursor: pointer; ">
+            <span style="cursor: pointer; ">Location</span><%=image_tag("icon_spacer.gif", :style=>"line-height: 100%; cursor: pointer; ", :border=>"0", :alt=>"", :class=>"sprite sprite_web s_web_downtick-spacer")%>
+          </a>
+          <a id="modified-sorter" class="sortable-column-header"  data-sort="FILES_BY_MODIFIED" data-ascending="false" style="cursor: pointer; ">
+            <span style="cursor: pointer; ">Modified</span><%=image_tag("icon_spacer.gif", :style=>"line-height: 100%; cursor: pointer; ", :border=>"0", :alt=>"", :class=>"sprite sprite_web s_web_sort-uptick-off")%>
+          </a>
+        </div>
+				<%=image_tag("icon_spacer.gif", :style=>"display:none;position:absolute;", :id=>"highlight-arrow", :alt=>"", :class=>"sprite sprite_web  s_web_arrow_highlight ")%>
+
+    <%=image_tag("icon_spacer.gif", :style=>"display:none;position:absolute;", :id=>"highlight-arrow", :alt=>"", :class=>"sprite sprite_web  s_web_arrow_highlight ")%>
+<div id="drop-zone">
+    <ol id="browse-files" style="cursor: default;" class="mouse-active">
+		<%=render :partial=>"folders/row", :collection=>@folders %>
+		<%=render :partial=>"analysis_files/list_item", :collection=>@files%>
+				 </ol>
+   </div>
+</div>
+
+
+</div>
+
+	
