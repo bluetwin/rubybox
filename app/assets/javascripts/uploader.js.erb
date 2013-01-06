@@ -15,6 +15,7 @@ var Uploader = {
 	aupload  : null,
 	bstat: null,
 	init: function() {
+		
 		this.istat = $("div#inline-upload-status");
 		this.cfdr = $("#current_folder_name").val();
 		this.upload_el = $("ol#upload-files-list");
@@ -186,7 +187,7 @@ var Uploader = {
 			title = '',
 			content ='';
 		// fetch title template and populate
-		title = { icon: 's_web_upload_32', title: "Upload to '" + Uploader.current_folder + "'"};
+		title = { icon: 's_web_upload_32', title: "Upload to '" + Uploader.cfdr + "'"};
 		html = $( "#modal_title_tmpl" ).render( title );
 		$("#modal-title").empty().append(html);
 		var au = $("#advanced-upload-modal");
