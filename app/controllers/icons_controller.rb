@@ -1,4 +1,5 @@
 class IconsController < ApplicationController
+  before_filter :authenticate_user!
   # GET /icons
   # GET /icons.json
   def index

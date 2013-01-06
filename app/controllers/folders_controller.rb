@@ -1,8 +1,8 @@
 class FoldersController < ApplicationController
 	layout nil
 	protect_from_forgery
-    before_filter :get_user, :except =>[:google_cache_code]
-	before_filter :authenticate_user!, :except =>[:google_cache_code]
+    before_filter :get_user
+	before_filter :authenticate_user!
 
 	def index
 		@parse 

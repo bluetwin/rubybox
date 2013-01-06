@@ -3,7 +3,7 @@ class UploadsController < ApplicationController
   #protect_from_forgery
   before_filter :get_user
   before_filter :authenticate_user!
-	# GET /uploads
+# GET /uploads
   # GET /uploads.xml
   def index
     @uploads = Upload.all
@@ -51,12 +51,12 @@ class UploadsController < ApplicationController
   # POST /uploads.xml
   def create
     upload_params = coerce(params)
-		#puts "newparams: #{newparams.inspect}"
     @upload = Upload.new(upload_params[:upload])
-		if @upload.save
-		#render :json => {:file => {:id=>@upload.id, :filesize => @upload.filesize, :ext=> @upload.extension, :icon => @upload.icon ,:name=>@upload.name}, :modified => @upload.created}
-			respond_to do |format|
-        format.html {                                         #(html response is for browsers using iframe sollution)
+	
+	if @upload.save
+	respond_to do |format|
+        format.html {                                         
+		#(html response is for browsers using iframe sollution)
           render :json => [@upload.to_jq_upload].to_json,
           :content_type => 'text/html',
           :layout => false
@@ -66,8 +66,8 @@ class UploadsController < ApplicationController
         }
 			end
 		else
-      render :json => [{:error => "custom_failure"}], :status => 304
-    end
+      		render :json => [{:error => "custom_failure"}], :status => 304
+    	end
   end
 
   # PUT /uploads/1
@@ -86,32 +86,21 @@ class UploadsController < ApplicationController
     end
   end
 	
-	def rename
-		@upload = Upload.find(params[:upload_id])
-		
-    respond_to do |format|
-      if @upload.rename_attachment(params[:upload][:escaped_name])
-				flash[:notice] = 'Rename complete'
-				format.js {}
+  def rename
+	@upload = Upload.find(params[:upload_id])
+	respond_to do |format|
+    if @upload.rename_attachment(params[:upload][:escaped_name])
+		flash[:notice] = 'Rename complete'
+		format.js {}
       	format.json  { render :json => @upload}
-     	else
-			 	flash[:notice] = 'File could not be changed'
-				format.js {}
-       	format.json  { render :json => @upload.errors }
+     else
+	 	flash[:notice] = 'File could not be changed'
+		format.js {}
+      	format.json  { render :json => @upload.errors }
       end
     end
-	end
-  
-  def clear_queue
-  	count = 0
-  	@uploads = Upload.where("user_id = ? and client_id =?", params[:user_id], params[:client_id])
-	@uploads.each do |upload|
-		upload.destroy
-		count += 1
-	end
-  	render :json => { 'status' => 'success', 'count' => count }
   end
-
+  
   # DELETE /uploads/1
   # DELETE /uploads/1.xml
   def destroy
@@ -125,7 +114,7 @@ class UploadsController < ApplicationController
   end
 
 	
-	def delete_all
+  def delete_all
 		
 		if params_has?([:items])
 			@msg = Hash.new
@@ -141,28 +130,9 @@ class UploadsController < ApplicationController
 		end
 	end
   
-  def process_file
-  	@upload = Upload.find(params[:id])
-		@data_file = DataFile.new(:client_id => params[:client_id], :user_id => current_user.id)
-		@data_file.data = @upload.data
-		#input the data into invoice table using client field lookup
-		@data_file.save
-		#Resque.enqueue(DataImporter, @datafile.id)
-		job = DataImporter.enqueue(@data_file.id)
-		@data_file.update_attributes(:meta_id => job.meta_id) 
-		#if @datafile.process_invoices(params[:client_id])
-		@upload.destroy
-		respond_to do |format|
-      format.js  { }
-    end
-	#else
-	#	error_msg = @datafile.error_msg
-	#	@datafile.destroy
-	#	render :json => { 'status' => 'failure', 'error' => error_msg}
-	#end
- end
+  
  
-def move
+	def move
 		if params_has?([:folder_id, :items])
 			@parent = Folder.find(params[:folder_id])
 			
@@ -178,29 +148,16 @@ def move
 		end
 	end
  
- # GET /uploads/queue_for/:client_id
- def status
-  
- 	@datafiles = DataFile.where("client_id = ? AND user_id = ? AND meta_id IS NOT NULL",params[:client_id].to_i, current_user.id)
-	@datafiles.each do | df |
-		meta = DataImporter.get_meta(df.meta_id)
-		puts "status:" + 	meta.inspect()
-	end
- end
- # GET /data_files/download/1
+ 
+  # GET /data_files/download/1
   # GET /data_files/download/1.xml
 	def download
 		@upload = Upload.find(params[:upload_id])
     send_file @upload.attachment.path
 	end
  
- # GET /uploads/queue_for/:client_id
- def queue_for
- 	@uploads = Upload.find_all_by_client_id(params[:client_id])
-	render :partial => "show", :collection => @uploads
- end
-  
-   private 
+  private 
+   
   def coerce(params)
     if !params[:file].nil? and params[:file]
 			h = Hash.new

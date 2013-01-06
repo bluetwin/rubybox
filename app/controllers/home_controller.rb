@@ -1,5 +1,5 @@
 class HomeController < ApplicationController
-	 before_filter :authenticate_user!
+  before_filter :authenticate_user!
   def index
 		@root = Folder.where(folder_id: nil).first
 		if Folder.where(_id: params[:id]).exists?

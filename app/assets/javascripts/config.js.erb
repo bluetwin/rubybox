@@ -68,6 +68,9 @@ $(document).ready(function() {
 	
 	SelectMonitor.init(".browse-file");
 	Uploader.init();
+	Uploader.file_info.data("count",0);
+	Uploader.file_info.data("complete",0);
+	Uploader.file_info.data("filesize",0);
 	Sprite.init();
 	
 	/*$(".filename-link").each(function(index) {

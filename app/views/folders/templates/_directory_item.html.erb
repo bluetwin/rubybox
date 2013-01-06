@@ -1,7 +1,7 @@
 <script type="text/x-jquery-tmpl" id="directory_item_tmpl">
 <li id="u_{{>id}}" class="list_view browse-file" data-identity="{{>data_identity}}" data-model-id="{{>id}}" data-model="uploads" data-processable="false" data-size="{{>size}}" dropzone="copy move" style="display:none;" >
 	<div class="filename-col">
-		<a href="/uploads/{{>id}}/download"><img alt="" class="{{>icon.class}}sprite sprite_web s_web_{{>icon}}_32 icon" draggable="true" src="{{>icon.src}}"></a><a href="/uploads/{{>id}}/download" class="filename-link" draggable="true" hidefocus="hideFocus" target="_self" title="download ">{{>name}}</a> 
+		<a href="/uploads/{{>id}}/download"><img alt="" class="{{>icon.class}}" draggable="true" src="{{>icon.src}}"></a><a href="/uploads/{{>id}}/download" class="filename-link" draggable="true" hidefocus="hideFocus" target="_self" title="download ">{{>name}}</a> 
 	</div>
 	<div class="kind">
 	<span class="category">file: </span><span class="extension secondary">.{{>ext}}</span></div><div class="modified"><span class="modified-time">{{>modified}}</span></div><br class="clear"></li>

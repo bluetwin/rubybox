@@ -1,23 +1,143 @@
-// Uploads object:
-// activities - 
+// Uploader object:
+// responsibilities - 
 // 1. to handle incoming uploads
 // 2. add upload to bulk upload container
 // 3. update progress boxes
-// 4. switch containers to complete or errors
+// 4. switch containers to complete or display errors
  
 var Uploader = {
 	queue: new Array(),
 	queue_file_size: 0,
 	completed: new Array(),
-	current_folder: '',
+	cfdr: '',
 	upload_el: '',
-	inline_status : null,
-	bulk_status: null,
+	istat : null,
+	aupload  : null,
+	bstat: null,
 	init: function() {
-		this.inline_status = $("div#inline-upload-status");
-		this.current_folder = $("#current_folder_name").val();
+		this.istat = $("div#inline-upload-status");
+		this.cfdr = $("#current_folder_name").val();
 		this.upload_el = $("ol#upload-files-list");
-		this.bulk_status = $("div.bulk-upload-info");
+		this.bstat = $("div.bulk-upload-info");
+		this.aupload = $("#advanced-upload-modal");
+		this.file_info = $("#bulk-upload-status div.bulk-upload-info div.files-info");
+		this.file_list =  $("#upload-files-list");
+	},
+	reset_status: function() {
+		var loader = Uploader;
+		this.istat.find("div.status").html('');
+		this.istat.find("a.view-details").html("");
+		this.istat.find("span.file-desc").html("");
+		this.istat.find("div.icon").empty().append(Sprite.html('web','s_web_syncing', {}));
+		
+		this.aupload.find("#upload-desc").hide();
+		this.aupload.find("ol#upload-files-list").show();
+		this.aupload.find("div#bulk-upload-status").show();
+		this.aupload.find("#upload-start-buttons").hide();
+		this.aupload.find("#upload-running-buttons").show();
+		
+		this.aupload.find("div#bulk-upload-status").removeClass("complete");
+		
+	},
+	updateBulkFileInfo: function() {
+		var loader = Uploader;
+		var info = loader.file_info;
+		var size = 0;
+		var info = $("#bulk-upload-status div.bulk-upload-info div.files-info");
+		info.data("count",$("#upload-files-list").find('li').length);
+		info.data("complete",$("#upload-files-list").find('li.complete').length);
+		var files = $("#upload-files-list").find("li");
+		var completed = $("#upload-files-list li.complete");
+		
+		console.info($("#upload-files-list").find("li").length);
+		
+		
+		info.data("count",files.length);
+		info.data("complete",completed.length);
+		
+		files.each(function(index) {
+			size += parseInt($(this).data("size"));
+		});
+		info.data("filesize",size);
+		
+	},
+	buildData: function(data) {
+		var loader = Uploader;
+		var info = loader.file_info;
+		var i = 0;
+		var params = {};
+		$.each(data.files, function(index, file)  {
+			i = $("#upload-files-list").find('li').length;
+			// jsRender template
+			params = {file: file, 
+					  dest: $("#current_folder_name").val(), 
+					  index:i, icon:Sprite.ext_icon(file.name)};
+			loader.upload_el.append($("#upload-tmpl").render(params));
+			
+			data.context = $("#upload-files-list li#upload_" + i);
+			data.context.data('IE',file.size);
+			data.context.find(".small-x-button").click(loader.cancelHandler);
+
+			info.data("count", parseInt(info.data("count")) + 1);
+			info.data("filesize", parseInt(info.data("filesize")) + file.size);
+		});
+		var file_size = filesize(parseInt(info.data("filesize")));
+		var file_count = info.data("count") + " file" + ((info.data("count") > 1) ? "s" : "");
+		info.find("span.num-files").html(file_count);
+		info.find("span.size").html( file_size);
+		if(parseInt(info.data("count")) > 6) {
+			loader.file_list.addClass("scroll");
+		}
+		//istat.find("div.icon").empty().append(Sprite.html('web','s_web_syncing', {}));
+		loader.istat.find("div.icon").html(Sprite.html('web','s_web_syncing', {}) );
+		if(!Modal.isVisible()) {
+			istat.show();
+		}
+	},
+	cancelHandler: function (e) {
+		var loader = Uploader;
+		var parent = $(this).closest("li");
+		var info = loader.file_info;
+		e.preventDefault();
+				
+		var template = $(e.currentTarget).closest('.template-upload'),
+        data = template.data('data') || {};
+        if (!data.jqXHR) {
+        	data.errorThrown = 'abort';
+            this._trigger('fail', e, data);
+        } else {
+            data.jqXHR.abort();
+        }
+		info.data("count", parseInt(info.data("count")) - 1);
+		console.info(parent.data("size"));
+		info.data("filesize", parseInt(info.data("filesize")) -  parseInt(parent.data("size")));
+		
+		var file_size = filesize(parseInt(info.data("filesize")));
+		var file_count = info.data("count") + " file" + ((info.data("count") > 1) ? "s" : "");
+		info.find("span.num-files").html(file_count);
+		info.find("span.size").html( file_size);
+		
+		parent.addClass("cancelled");
+		parent.find("div.dest-col").html("Cancelled");
+		parent.find("div.status-col").empty().append(Sprite.html('web','s_web_cancelsync', {}));
+		parent.find("div.upload-progress-bar").css("width", "0%");
+		if(!Uploader.isActive()) {
+			aupload.find("#hide-button").hide();
+			aupload.find("#done-button").show();
+		}
+	},
+	isActive: function () {
+		var active = $("#upload-files-list li").not(".complete",".cancelled");
+		return active.length > 0;
+	},
+	add: function (e, data) {
+		var loader = Uploader;
+		loader.reset_status();
+		loader.updateBulkFileInfo();
+		loader.buildData(data);
+		
+		var xhr = data.submit();
+		data.context.data('data',{jqXHR: xhr});			
 	},
 	dropped: function(files) {
 		var _el = this.inline_status,
@@ -92,14 +212,14 @@ var Uploader = {
 		
 		//$("#advanced-upload-modal").show();
 		
-		this.inline_status.hide();
+		this.istat.hide();
 		// show modal box
 		Modal.show();
 		}
 	},
 	
 	reset : function(event) {
-		var _status = this.inline_status
+		var _status = this.istat;
 		_status.find("div.icon img").removeClass("s_web_synced");
 		_status.find("div.icon img").addClass("s_web_syncing");
 		_status.removeClass("complete");
