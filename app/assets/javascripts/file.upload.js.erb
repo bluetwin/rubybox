@@ -3,9 +3,8 @@ $(document).ready(function() {
 	$('#fileupload').fileupload({
 		filesContainer: '#upload-files-list',
 		autoUpload: false,
-		sequentialUploads: false,
+		sequentialUploads: true,
 		bitrateInterval: 500,
-		acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i, // only allow images
 		limitConcurrentUploads: 1,
 		add: Uploader.add,
 		send: function (e, data) {

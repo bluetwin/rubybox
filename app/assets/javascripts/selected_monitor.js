@@ -15,7 +15,7 @@ var SelectMonitor = {
 	},
 	bind_events: function(el) {
 		var $monitor = SelectMonitor;
-		el.on("click", function(event){
+		el.on("mousedown", function(event){
 			var $this = $(this);
 			var target  = $(event.target);
 			if (target.is('a')) {

@@ -29,3 +29,6 @@
 //= require jquery-file-upload/jquery.fileupload
 //= require file.upload
 //= require keypress
+//= require mouse.events
+//= require lib
+//= require status.element

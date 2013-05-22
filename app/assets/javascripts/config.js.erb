@@ -10,30 +10,7 @@ $(document).ready(function() {
 		}
 	});
 			
-	$(document).mouseup(function (e) {
-    var container = $("#user_dropdown");
-    if (!container.is(e.target) && container.has(e.target).length === 0)
-    {
-			container.hide();
-    }
-	 	var container = $("#original_content,#modal-box,#modal-behind,#modal-overlay,#browse-sort,#browse-root-actions,#new_folder_button");
-	 	if (!container.is(e.target) && container.has(e.target).length === 0)
-    {
-			$(".file-select").each(function() {
-       	var el = $(this);
-				//console.info("removing file select");
-				SelectMonitor.removeItem(el);
-        el.removeClass("file-select");
-				el.removeAttr("draggable");
-				
-			});
-			$(".browse-file div.filename-col form").each(function() {
-				console.info("submitting form");
-				console.info(this);
-				$(this).submit();
-			});
-    }
-	});
+	
 	
 	$('.ul_select_menu').each(function(index) {
 		$(this).on('click',function(){
@@ -45,7 +22,7 @@ $(document).ready(function() {
 		});
 	});
 	
-	$(document).mouseup(function (e) {
+	$(document).mousedown(function (e) {
     	var container = $(".ul_select_menu");
     	if (container.has(e.target).length === 0)
     	{
@@ -73,13 +50,8 @@ $(document).ready(function() {
 	Uploader.file_info.data("filesize",0);
 	Sprite.init();
 	
-	/*$(".filename-link").each(function(index) {
-		var $this = $(this);
-		$this.text($this.text().replace("\\'","."));
-	});*/
 			
 	$(window).resize(function () {
-         
         //only do it if the dialog box is not hidden
         if (!$('div#modal-overlay').is(':hidden')) Modal.show();       
     }); 
